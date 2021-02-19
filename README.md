@@ -30,7 +30,7 @@
  - Owners can generate license keys.
 
 # Installation
- Make sure you have python 3.8.7 or higher.
+ Make sure you have python 3.8.7 or higher.<br/>
  Change the aid, apikey, secret, authkey with the bot do not add it to the configs.json.
 ```
 pip3 install -r requirements.txt
