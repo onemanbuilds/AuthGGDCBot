@@ -31,10 +31,10 @@
 
 # Installation
  Make sure you have python 3.8.7 or higher.
+ Change the aid, apikey, secret, authkey with the bot do not add it to the configs.json.
 ```
 pip3 install -r requirements.txt
 ``` 
- Change the aid, apikey, secret, authkey with the bot do not add it to the configs.json.
  
 # Configs.json 
  - token (your token for the discord bot).<br/>
