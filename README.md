@@ -1,12 +1,6 @@
 # AuthGGDCBot
   Since i bought auth.gg license management system i decided to make a discord bot for it in python.
 
-# Installation
- Make sure you have python 3.8.7 or higher.
-```
-pip3 install -r requirements.txt
-``` 
-
 # Features
  - Colored messages.<br/>
  - Users can get their license expiration date.<br/>
@@ -32,9 +26,26 @@ pip3 install -r requirements.txt
  - Owners can change the auth.gg secret.<br/>
  - Owners can reset the user's hwid.<br/>
  - Owners can set the user's hwid.
+
+# Installation
+ Make sure you have python 3.8.7 or higher.
+```
+pip3 install -r requirements.txt
+``` 
+ 
+# Configs.json 
+ - token (your token for the discord bot).<br/>
+ - admin_role_id (the id of the admin role on your server).<br/>
+ - owner_role_id (the id of the owner role on your server).<br/>
+ - prefix (bot prefix for the commands for example -help - is the prefix here).<br/>
+ - aid (your auth.gg aid which you can find at the settings tab on the auth.gg website).<br/>
+ - apikey (your auth.gg apikey which you can find at the settings tab on the auth.gg website).<br/>
+ - secret (your application's secret key which you can find at the settings tab on the auth.gg website).<br/>
+ - authkey (your application's auth key which you can find at the application's panel).
  
 # ToDo
  - Make the code better.<br/>
+ - Add help command.<br/>
  - Add salt to the encrypted data.<br/>
  - Add genlicense method.<br/>
  - Add a log system or something in a txt to see who used the commands.
