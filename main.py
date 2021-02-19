@@ -7,7 +7,6 @@ from os import name,system
 from base64 import b64decode,b64encode
 
 #add salt to the encrypted data
-#make genlicense work
 #make code cleaner
 
 colors = {}
