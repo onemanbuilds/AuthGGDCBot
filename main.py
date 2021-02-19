@@ -16,6 +16,27 @@ colors['green'] = "\033[0;32m"
 colors['red'] = "\033[0;31m"
 colors['yellow'] = "\033[1;33m"
 
+general_commands = {
+    f"⚙️ `prefix <newprefix>`":"Admins can change the bot's prefix.",
+    f"⚙️ `setaid <newaid>`":"Owners can change the auth.gg aid.",
+    f"⚙️ `setapikey <newapikey>`":"Owners can change the auth.gg apikey.",
+    f"⚙️ `setsecret <newsecret>`":"Owners can change the auth.gg secret.",
+    f"⚙️ `setauthkey <newauthkey>`":"Admins can change the authkey.",
+    f"🕵️ `getuserinfo <username>`":"Admins can get the user's (email, rank, hwid, variable, lastlogin, lastip, expiry date).",
+    f"🕵️ `usercount`":"Admins can check the user count.",
+    f"🕵️ `licenseinfo <license>`":"Admins can get license infos by license (rank, used, used by, created at).",
+    f"🕵️ `gethwid <username>`":"Admins can get the user's hwid.",
+    f"❌ `deluser <username>`":"Admins can delete users from the database.",
+    f"❌ `dellicense <license>`":"Admins can delete user's license.",
+    f"✏️ `editvar <username> <value>`":"Admins can edit user variables.",
+    f"✏️ `editrank <username> <rank>`":"Admins can edit the user's rank.",
+    f"✏️ `changepw <username> <newpassword>`":"Admins can change the user's password if the user forgot it.",
+    f"✏️ `sethwid <username>`":"Owners can set the user's hwid.",
+    f"👍 `uselicense <license>`":"Admins can set the license state to used.",
+    f"👎 `unuselicense <license>`":"Admins can set the license state to unused.",
+    f"⏰ `resethwid <username>`":"Owners can reset the user's hwid.",
+}
+
 api_url = "https://api.auth.gg/v1/"
 
 
@@ -61,10 +82,23 @@ admin_role_id = ReadConfig()['admin_role_id']
 owner_role_id = ReadConfig()['owner_role_id']
 
 bot = commands.Bot(ReadConfig()['prefix'])
+bot.remove_command('help')
 
 @bot.event
 async def on_ready():
     print(colors['white']+'[#] AUTH.GG READY!')
+
+@bot.command(pass_context=True)
+async def help(ctx):
+    await ctx.message.delete()
+    try:
+        embed_message = discord.Embed(title='HELP',color=0x0070ff,timestamp=ctx.message.created_at)
+        for key in general_commands:
+            embed_message.add_field(name=key,value=general_commands[key],inline=False)
+        await ctx.send(embed=embed_message)
+    except Exception as e:
+        print(colors['yellow']+'EXCEPTION at HELP {0}'.format(colors['red']+str(e)))
+    
 
 @bot.command(pass_context=True)
 @commands.has_role(admin_role_id)
