@@ -45,7 +45,6 @@ pip3 install -r requirements.txt
  
 # ToDo
  - Make the code better.<br/>
- - Add help command.<br/>
  - Add salt to the encrypted data.<br/>
  - Add genlicense method.<br/>
  - Add a log system or something in a txt to see who used the commands.
