@@ -2,6 +2,7 @@
   Since i bought auth.gg license management system i decided to make a discord bot for it in python.
 
 # Features
+ - On ready message.
  - Colored messages.<br/>
  - Async requests.<br/>
  - Users can get their license expiration date.<br/>
