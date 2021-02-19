@@ -49,3 +49,7 @@ pip3 install -r requirements.txt
  - Add salt to the encrypted data.<br/>
  - Add genlicense method.<br/>
  - Add a log system or something in a txt to see who used the commands.
+ 
+# Support
+ - PayPal: onemanbuildsofficial@gmail.com<br/>
+ - BTC: 1M3MdGLNp9FvHWDyeu1ekCyY36pwwGcP7B
