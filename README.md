@@ -3,6 +3,7 @@
 
 # Features
  - Colored messages.<br/>
+ - Async requests.<br/>
  - Users can get their license expiration date.<br/>
  - Almost every variable has an empty check.<br/>
  - Every method has a json value error check with a colored message.<br/>
