@@ -1,0 +1,10 @@
+{
+    "token":"bottokenhere",
+    "admin_role_id":123,
+    "owner_role_id":123,
+    "prefix":"yourprefixhere",
+    "aid":"setitwiththebotcommand",
+    "apikey":"setitwiththebotcommand",
+    "secret":"setitwiththebotcommand",
+    "authkey":"setitwiththebotcommand"
+}
