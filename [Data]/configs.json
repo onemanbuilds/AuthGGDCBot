@@ -1,10 +1,1 @@
-{
-    "token":"bottokenhere",
-    "admin_role_id":123,
-    "owner_role_id":123,
-    "prefix":"yourprefixhere",
-    "aid":"setitwiththebotcommand",
-    "apikey":"setitwiththebotcommand",
-    "secret":"setitwiththebotcommand",
-    "authkey":"setitwiththebotcommand"
-}
+{"token": "ODEyMTE1Nzg3NzYxMzE5OTQ2.YC8DxA.Y8dGPDWQhMbenQxdmijHW_uhdvw", "admin_role_id": 778687825507385364, "owner_role_id": 778688298007658536, "prefix": "-", "aid": "ODY4Mjkz", "apikey": "MTE4NDYxMjc4MzI5MTI1NTk2ODEyMjg3OTI2MTQ5NzIzNQ==", "secret": "UEg5VFVMS3BZQTY5TkNLOEJsUWpEVWZkNVJBSXo1eEF3cjc=", "authkey": "T1JCRkpQRU5ITllR"}

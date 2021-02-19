@@ -26,6 +26,7 @@ general_commands = {
     f"🕵️ `usercount`":"Admins can check the user count.",
     f"🕵️ `licenseinfo <license>`":"Admins can get license infos by license (rank, used, used by, created at).",
     f"🕵️ `gethwid <username>`":"Admins can get the user's hwid.",
+    f"🕵️ `expiry <username> <password>`":"Users can get their license expiration date. **be careful others can snipe it.**",
     f"❌ `deluser <username>`":"Admins can delete users from the database.",
     f"❌ `dellicense <license>`":"Admins can delete user's license.",
     f"✏️ `editvar <username> <value>`":"Admins can edit user variables.",
@@ -229,7 +230,7 @@ async def expiry(ctx,username,password):
                     expiry = response_json['expiry']
                     if expiry == '': expiry = 'NOT FOUND'
     
-                    embed = discord.Embed(title='EXPIRY',color=0x00ff00,description=f'USER **{username}** YOUR LICENSE WILL EXPIRE AT: **{expiry}**\n{ctx.author.mention}')
+                    embed = discord.Embed(title='EXPIRY',color=0x00ff00,description=f'USER: **{username}**\nYOUR LICENSE WILL EXPIRE AT: **{expiry}**\n{ctx.author.mention}')
                     await ctx.send(embed=embed)
                 elif response_json['result'] == 'invalid_details':
                     embed = discord.Embed(title='EXPIRY',color=0xff0000,description=f'INVALID LOGIN DETAILS **{username}**\n{ctx.author.mention}')
@@ -283,7 +284,7 @@ async def getuserinfo(ctx,username):
                     if lastip == '': lastip = 'NOT FOUND'
                     if expiry == '': expiry = 'NOT FOUND'
 
-                    embed = discord.Embed(title='USERINFO',color=0x00ff00,description=f'USERNAME: **{username}**\nEMAIL: **{email}**\nRANK: **{rank}**\nHWID: **{hwid}**\nVARIABLE: **{variable}**\nLASTLOGIN: **{lastlogin}**\nLASTIP: **{lastip}**\n EXPIRY: **{expiry}**\n{ctx.author.mention}')
+                    embed = discord.Embed(title='USERINFO',color=0x00ff00,description=f'USERNAME: **{username}**\nEMAIL: **{email}**\nRANK: **{rank}**\nHWID: ||**{hwid}**||\nVARIABLE: **{variable}**\nLASTLOGIN: **{lastlogin}**\nLASTIP: ||**{lastip}**||\n EXPIRY: **{expiry}**\n{ctx.author.mention}')
                     await ctx.send(embed=embed)
                 elif response_json['status'] == 'failed':
                     embed = discord.Embed(title='USERINFO',color=0xff0000,description=f'FAILED TO GET USERINFO USER **{username}**\n{ctx.author.mention}')
@@ -310,7 +311,7 @@ async def deluser(ctx,username):
                 response_json = await response.json(content_type=None)
                 
                 if response_json['status'] == 'success':
-                    embed = discord.Embed(title='DELUSER',color=0x00ff00,description=f'USER **{username}** DELETED!\n{ctx.author.mention}')
+                    embed = discord.Embed(title='DELUSER',color=0x00ff00,description=f'USER: **{username}** DELETED!\n{ctx.author.mention}')
                     await ctx.send(embed=embed)
                 elif response_json['status'] == 'failed':
                     embed = discord.Embed(title='DELUSER',color=0xff0000,description=f'FAILED TO DELETE USER **{username}**\n{ctx.author.mention}')
@@ -340,7 +341,7 @@ async def editvar(ctx,username,value):
                 response_json = await response.json(content_type=None)
                 
                 if response_json['status'] == 'success':
-                    embed = discord.Embed(title='EDITVAR',color=0x00ff00,description=f'USER **{username}** VARIABLE **{value}** ADDED!\n{ctx.author.mention}')
+                    embed = discord.Embed(title='EDITVAR',color=0x00ff00,description=f'USER: **{username}**\nVARIABLE **{value}** ADDED!\n{ctx.author.mention}')
                     await ctx.send(embed=embed)
                 elif response_json['status'] == 'failed':
                     embed = discord.Embed(title='EDITVAR',color=0xff0000,description=f'FAILED TO ADD USER **{username}** VARIABLE\n{ctx.author.mention}')
@@ -369,7 +370,7 @@ async def editrank(ctx,username,rank):
                 response_json = await response.json(content_type=None)
                 
                 if response_json['status'] == 'success':
-                    embed = discord.Embed(title='EDITRANK',color=0x00ff00,description=f'USER **{username}** RANK SET TO **{rank}**!\n{ctx.author.mention}')
+                    embed = discord.Embed(title='EDITRANK',color=0x00ff00,description=f'USER: **{username}**\nRANK SET TO **{rank}**!\n{ctx.author.mention}')
                     await ctx.send(embed=embed)
                 elif response_json['status'] == 'failed':
                     embed = discord.Embed(title='EDITRANK',color=0xff0000,description=f'FAILED TO EDIT **{username}** RANK\n{ctx.author.mention}')
@@ -399,7 +400,7 @@ async def changepw(ctx,username,newpassword):
                 response_json = await response.json(content_type=None)
                 
                 if response_json['status'] == 'success':
-                    embed = discord.Embed(title='CHANGEPW',color=0x00ff00,description=f'USER **{username}** PASSWORD SET TO |JUST KIDDING|!\n{ctx.author.mention}')
+                    embed = discord.Embed(title='CHANGEPW',color=0x00ff00,description=f'USER: **{username}** PASSWORD SET TO ||JUST KIDDING||!\n{ctx.author.mention}')
                     await ctx.send(embed=embed)
                 elif response_json['status'] == 'failed':
                     embed = discord.Embed(title='CHANGEPW',color=0xff0000,description=f'FAILED TO CHANGE USER **{username}** PASSWORD\n{ctx.author.mention}')
@@ -450,7 +451,7 @@ async def licenseinfo(ctx,license):
             try:
                 response_json = await response.json(content_type=None)
                 if response_json['status'] == 'success':
-                    
+                    #print(response_json)
                     rank = response_json['rank']
                     used = response_json['used']
                     used_by = response_json['used_by']
@@ -461,10 +462,10 @@ async def licenseinfo(ctx,license):
                     if used_by == '': used_by = 'NOT FOUND'
                     if created == '': created = 'NOT FOUND'
 
-                    embed = discord.Embed(title='LICENSEINFO',color=0x00ff00,description=f'LICENSE: **{license}**\nRANK: **{rank}**\nUSED: **{used}**\nUSED BY: **{used_by}**\nCREATED: **{created}**\n{ctx.author.mention}')
+                    embed = discord.Embed(title='LICENSEINFO',color=0x00ff00,description=f'LICENSE: ||**{license}**||\nRANK: **{rank}**\nUSED: **{used}**\nUSED BY: **{used_by}**\nCREATED: **{created}**\n{ctx.author.mention}')
                     await ctx.send(embed=embed)
                 elif response_json['status'] == 'failed':
-                    embed = discord.Embed(title='LICENSEINFO',color=0xff0000,description=f'FAILED TO GET LICENSE INFO **{license}**\n{ctx.author.mention}')
+                    embed = discord.Embed(title='LICENSEINFO',color=0xff0000,description=f'FAILED TO GET LICENSE INFO ||**{license}**||\n{ctx.author.mention}')
                     await ctx.send(embed=embed)
                 else:
                     embed = discord.Embed(title='LICENSEINFO',color=0xff0000,description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
@@ -487,10 +488,10 @@ async def dellicense(ctx,license):
             try:
                 response_json = await response.json(content_type=None)
                 if response_json['status'] == 'success':
-                    embed = discord.Embed(title='DELLICENSE',color=0x00ff00,description=f'LICENSE DELETED: {license}\n{ctx.author.mention}')
+                    embed = discord.Embed(title='DELLICENSE',color=0x00ff00,description=f'LICENSE DELETED: ||**{license}**||\n{ctx.author.mention}')
                     await ctx.send(embed=embed)
                 elif response_json['status'] == 'failed':
-                    embed = discord.Embed(title='DELLICENSE',color=0xff0000,description=f'FAILED TO DELETE LICENSE **{license}**\n{ctx.author.mention}')
+                    embed = discord.Embed(title='DELLICENSE',color=0xff0000,description=f'FAILED TO DELETE LICENSE ||**{license}**||\n{ctx.author.mention}')
                     await ctx.send(embed=embed)
                 else:
                     embed = discord.Embed(title='DELLICENSE',color=0xff0000,description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
@@ -513,10 +514,10 @@ async def uselicense(ctx,license):
             try:
                 response_json = await response.json(content_type=None)
                 if response_json['status'] == 'success':
-                    embed = discord.Embed(title='USELICENSE',color=0x00ff00,description=f'LICENSE USED: {license}\n{ctx.author.mention}')
+                    embed = discord.Embed(title='USELICENSE',color=0x00ff00,description=f'LICENSE USED: ||**{license}**||\n{ctx.author.mention}')
                     await ctx.send(embed=embed)
                 elif response_json['status'] == 'failed':
-                    embed = discord.Embed(title='USELICENSE',color=0xff0000,description=f'FAILED TO USE LICENSE **{license}**\n{ctx.author.mention}')
+                    embed = discord.Embed(title='USELICENSE',color=0xff0000,description=f'FAILED TO USE LICENSE ||**{license}**||\n{ctx.author.mention}')
                     await ctx.send(embed=embed)
                 else:
                     embed = discord.Embed(title='USELICENSE',color=0xff0000,description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
@@ -539,10 +540,10 @@ async def unuselicense(ctx,license):
             try:
                 response_json = await response.json(content_type=None)
                 if response_json['status'] == 'success':
-                    embed = discord.Embed(title='UNUSELICENSE',color=0x00ff00,description=f'LICENSE UNUSED: {license}\n{ctx.author.mention}')
+                    embed = discord.Embed(title='UNUSELICENSE',color=0x00ff00,description=f'LICENSE UNUSED: ||**{license}**||\n{ctx.author.mention}')
                     await ctx.send(embed=embed)
                 elif response_json['status'] == 'failed':
-                    embed = discord.Embed(title='UNUSELICENSE',color=0xff0000,description=f'FAILED TO UNUSE LICENSE **{license}**\n{ctx.author.mention}')
+                    embed = discord.Embed(title='UNUSELICENSE',color=0xff0000,description=f'FAILED TO UNUSE LICENSE ||**{license}**||\n{ctx.author.mention}')
                     await ctx.send(embed=embed)
                 else:
                     embed = discord.Embed(title='UNUSELICENSE',color=0xff0000,description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
@@ -637,7 +638,7 @@ async def gethwid(ctx,username):
                 if response_json['status'] == 'success':
                     hwid = response_json['value']
                     if hwid == '': hwid = 'NOT FOUND'
-                    embed = discord.Embed(title='GETHWID',color=0x00ff00,description=f'USER **{username}** HWID: **{hwid}**\n{ctx.author.mention}')
+                    embed = discord.Embed(title='GETHWID',color=0x00ff00,description=f'USER: **{username}**\nHWID: ||**{hwid}**||\n{ctx.author.mention}')
                     await ctx.send(embed=embed)
                 elif response_json['status'] == 'failed':
                     embed = discord.Embed(title='GETHWID',color=0xff0000,description=f'FAILED TO GET USER **{username}** HWID\n{ctx.author.mention}')
@@ -663,7 +664,7 @@ async def resethwid(ctx,username):
             try:
                 response_json = await response.json(content_type=None)
                 if response_json['status'] == 'success':
-                    embed = discord.Embed(title='RESETHWID',color=0x00ff00,description=f'USER **{username}** HWID RESET DONE*\n{ctx.author.mention}')
+                    embed = discord.Embed(title='RESETHWID',color=0x00ff00,description=f'USER: **{username}** HWID RESET DONE\n{ctx.author.mention}')
                     await ctx.send(embed=embed)
                 elif response_json['status'] == 'failed':
                     embed = discord.Embed(title='RESETHWID',color=0xff0000,description=f'FAILED TO RESET USER **{username}** HWID\n{ctx.author.mention}')
@@ -692,7 +693,7 @@ async def sethwid(ctx,username,newhwid):
             try:
                 response_json = await response.json(content_type=None)
                 if response_json['status'] == 'success':
-                    embed = discord.Embed(title='SETHWID',color=0x00ff00,description=f'USER **{username}** HWID SET TO {newhwid}*\n{ctx.author.mention}')
+                    embed = discord.Embed(title='SETHWID',color=0x00ff00,description=f'USER: **{username}**\nHWID SET TO ||**{newhwid}**||\n{ctx.author.mention}')
                     await ctx.send(embed=embed)
                 elif response_json['status'] == 'failed':
                     embed = discord.Embed(title='SETHWID',color=0xff0000,description=f'FAILED TO SET USER **{username}** HWID\n{ctx.author.mention}')
