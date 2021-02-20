@@ -9,6 +9,14 @@ from base64 import b64decode,b64encode
 #add salt to the encrypted data
 #make code cleaner
 
+def clear():
+    if name == 'posix':
+        system('clear')
+    elif name in ('ce', 'nt', 'dos'):
+        system('cls')
+    else:
+        print("\n") * 120
+
 colors = {}
 colors['white'] = "\033[1;37m"
 colors['green'] = "\033[0;32m"
@@ -79,9 +87,15 @@ async def GetUserHWID(authkey,username):
     except ValueError as v:
         print(colors['yellow']+'JSON Value error at GETUSERHWID {0}'.format(colors['red']+str(v)))
 
+def Log(user,command):
+    print(colors['white']+'USER '+colors['yellow']+str(user)+colors['white']+' USED THE COMMAND '+colors['yellow']+command)
+    with open('logs.txt','a',encoding='utf8') as f:
+        f.write(f'USER {str(user)} USED THE COMMAND {command}\n')
+
 admin_role_id = ReadConfig()['admin_role_id']
 owner_role_id = ReadConfig()['owner_role_id']
 
+clear()
 bot = commands.Bot(ReadConfig()['prefix'])
 bot.remove_command('help')
 
@@ -92,6 +106,7 @@ async def on_ready():
 @bot.command(pass_context=True)
 async def help(ctx):
     await ctx.message.delete()
+    Log(ctx.message.author,'help')
     try:
         embed_message = discord.Embed(title='HELP',color=0x0070ff,timestamp=ctx.message.created_at)
         for key in general_commands:
@@ -105,7 +120,7 @@ async def help(ctx):
 @commands.has_role(admin_role_id)
 async def prefix(ctx,newprefix):
     await ctx.message.delete()
-    
+    Log(ctx.message.author,'prefix')
     if newprefix is None:
         return
 
@@ -139,7 +154,7 @@ async def prefix(ctx,newprefix):
 @commands.has_role(owner_role_id)
 async def setaid(ctx,newaid):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'setaid')
     if newaid is None:
         return
 
@@ -155,7 +170,7 @@ async def setaid(ctx,newaid):
 @commands.has_role(owner_role_id)
 async def setapikey(ctx,newapikey):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'setapikey')
     if newapikey is None:
         return
 
@@ -171,7 +186,7 @@ async def setapikey(ctx,newapikey):
 @commands.has_role(owner_role_id)
 async def setsecret(ctx,newsecret):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'setsecret')
     if newsecret is None:
         return
 
@@ -187,6 +202,7 @@ async def setsecret(ctx,newsecret):
 @commands.has_role(admin_role_id)
 async def setauthkey(ctx,newauthkey):
     await ctx.message.delete()
+    Log(ctx.message.author,'setauthkey')
     try:
         ReplaceValueInJsonb64('[Data]/configs.json','authkey',newauthkey)
     except ValueError as v:
@@ -198,7 +214,7 @@ async def setauthkey(ctx,newauthkey):
 @bot.command(pass_context=True)
 async def expiry(ctx,username,password):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'expiry')
     if username is None:
         return
     
@@ -256,7 +272,7 @@ async def expiry(ctx,username,password):
 @commands.has_role(admin_role_id)
 async def getuserinfo(ctx,username):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'getuserinfo')
     if username is None:
         return
 
@@ -299,7 +315,7 @@ async def getuserinfo(ctx,username):
 @commands.has_role(admin_role_id)
 async def deluser(ctx,username):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'deluser')
     if username is None:
         return
 
@@ -326,7 +342,7 @@ async def deluser(ctx,username):
 @commands.has_role(admin_role_id)
 async def editvar(ctx,username,value):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'editvar')
     if username is None:
         return
 
@@ -356,7 +372,7 @@ async def editvar(ctx,username,value):
 @commands.has_role(admin_role_id)
 async def editrank(ctx,username,rank):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'editrank')
     if username is None:
         return
     
@@ -385,7 +401,7 @@ async def editrank(ctx,username,rank):
 @commands.has_role(admin_role_id)
 async def changepw(ctx,username,newpassword):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'changepw')
     if username is None:
         return
     
@@ -416,7 +432,7 @@ async def changepw(ctx,username,newpassword):
 @commands.has_role(admin_role_id)
 async def usercount(ctx):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'usercount')
     authkey = b64decode(ReadConfig()['authkey']).decode()
 
     async with aiohttp.ClientSession() as session:
@@ -440,7 +456,7 @@ async def usercount(ctx):
 @commands.has_role(admin_role_id)
 async def licenseinfo(ctx,license):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'licenseinfo')
     if license is None:
         return
 
@@ -477,7 +493,7 @@ async def licenseinfo(ctx,license):
 @commands.has_role(admin_role_id)
 async def dellicense(ctx,license):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'dellicense')
     if license is None:
         return
 
@@ -503,7 +519,7 @@ async def dellicense(ctx,license):
 @commands.has_role(admin_role_id)
 async def uselicense(ctx,license):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'uselicense')
     if license is None:
         return
 
@@ -529,7 +545,7 @@ async def uselicense(ctx,license):
 @commands.has_role(admin_role_id)
 async def unuselicense(ctx,license):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'unuselicense')
     if license is None:
         return
 
@@ -555,7 +571,7 @@ async def unuselicense(ctx,license):
 @commands.has_role(owner_role_id)
 async def genlicense(ctx,days,amount,level,format,prefix,length):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'genlicense')
     if days is None:
         return
     if amount is None:
@@ -597,7 +613,7 @@ async def genlicense(ctx,days,amount,level,format,prefix,length):
 @commands.has_role(admin_role_id)
 async def licensecount(ctx):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'licensecount')
     authkey = b64decode(ReadConfig()['authkey']).decode()
 
     async with aiohttp.ClientSession() as session:
@@ -621,7 +637,7 @@ async def licensecount(ctx):
 @commands.has_role(admin_role_id)
 async def gethwid(ctx,username):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'gethwid')
     if username is None:
         return
 
@@ -649,7 +665,7 @@ async def gethwid(ctx,username):
 @commands.has_role(owner_role_id)
 async def resethwid(ctx,username):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'resethwid')
     if username is None:
         return
 
@@ -675,7 +691,7 @@ async def resethwid(ctx,username):
 @commands.has_role(owner_role_id)
 async def sethwid(ctx,username,newhwid):
     await ctx.message.delete()
-
+    Log(ctx.message.author,'sethwid')
     if username is None:
         return
 
