@@ -68,7 +68,8 @@ class Main:
             f.write(f'[{timestamp}] USER {str(user)} USED THE COMMAND {command}\n')
 
     def Error(self,message,error):
-        print(f"{colors['yellow']}[{message}] {colors['red']}{str(error)}")
+        timestamp = str(datetime.now().strftime('%Y-%M-%d %H:%M:%S'))
+        print(f"{colors['white']}[{colors['green']}{timestamp}{colors['white']}] {colors['yellow']}{message} {colors['red']}{str(error)}")
 
     def __init__(self):
         clear()

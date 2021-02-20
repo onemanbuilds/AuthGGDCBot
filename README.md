@@ -53,7 +53,10 @@ pip3 install -r requirements.txt
  - apikey (your auth.gg apikey which you can find at the settings tab on the auth.gg website).<br/>
  - secret (your application's secret key which you can find at the settings tab on the auth.gg website).<br/>
  - authkey (your application's auth key which you can find at the application's panel).
- 
+
+# Console
+![](https://i.ibb.co/7g3jF9Y/tool.png)
+
 # ToDo
  - Add salt to the encrypted data.
  
