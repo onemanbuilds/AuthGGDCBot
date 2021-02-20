@@ -5,7 +5,11 @@
  - On ready message.
  - Colored messages.<br/>
  - Async requests.<br/>
+ - Clear function.
+ - Log with colored print.
+ - Logs can be viewed from the log.txt.
  - Users can get their license expiration date.<br/>
+ - Users can view the commands with the help command.<br/>
  - Almost every variable has an empty check.<br/>
  - Every method has a json value error check with a colored message.<br/>
  - Every sensitive data is encrypted in the configs.json.<br/>
