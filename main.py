@@ -7,6 +7,8 @@ from base64 import b64decode, b64encode
 from numpy import AxisError
 from datetime import datetime
 
+#need to add clearlog command
+
 colors = {'white': "\033[1;37m", 'green': "\033[0;32m", 'red': "\033[0;31m", 'yellow': "\033[1;33m"}
 
 def clear():
@@ -43,6 +45,10 @@ def ReplaceValueInJson(filename, key, new_value):
         json.dump(data, jsonFile)
 
 
+def ClearFile(filename):
+    with open(filename,'w+',encoding='utf8') as f:
+        f.write('')
+
 class Main:
     async def GetUserHWID(self, authkey, username):
         try:
@@ -64,7 +70,7 @@ class Main:
     def Log(self, user, command):
         timestamp = str(datetime.now().strftime('%Y-%M-%d %H:%M:%S'))
         print(f"{colors['white']}[{colors['green']}{timestamp}{colors['white']}] USER {colors['yellow']}{str(user)} {colors['white']}USED THE COMMAND {colors['yellow']}{command}")
-        with open('logs.txt', 'a', encoding='utf8') as f:
+        with open('[Data]/logs.txt', 'a', encoding='utf8') as f:
             f.write(f'[{timestamp}] USER {str(user)} USED THE COMMAND {command}\n')
 
     def Error(self,message,error):
@@ -102,6 +108,7 @@ class Main:
             "🕵️ `expiry <username> <password>`": "Users can get their license expiration date. **be careful others can snipe it.**",
             "❌ `deluser <username>`": "Admins can delete users from the database.",
             "❌ `dellicense <license>`": "Admins can delete user's license.",
+            "❌ `clearlog`": "Owners can clear the log.",
             "✏️ `editvar <username> <value>`": "Admins can edit user variables.",
             "✏️ `editrank <username> <rank>`": "Admins can edit the user's rank.",
             "✏️ `changepw <username> <newpassword>`": "Admins can change the user's password if the user forgot it.",
@@ -146,7 +153,21 @@ class Main:
                     embed_message.add_field(name=key, value=self.general_commands[key], inline=False)
                 await ctx.send(embed=embed_message)
             except Exception as e:
-                self.Error('EXCEPTION',e)
+                self.Error('EXCEPTION (HELP)',e)
+        
+        @self.bot.command(pass_context=True)
+        @commands.has_role(self.owner_role_id)
+        async def clearlog(ctx):
+            await ctx.message.delete()
+            self.Log(ctx.message.author, 'clearlog')
+            try:
+                ClearFile('[Data]/logs.txt')
+            except Exception as e:
+                self.Error('EXCEPTION (CLEARLOG)',e)
+            else:
+                embed = discord.Embed(title='CLEARLOG', color=0x00ff00,
+                                      description=f'LOG CLEARED\n{ctx.author.mention}')
+                await ctx.send(embed=embed)
 
         @self.bot.command(pass_context=True)
         @commands.has_role(self.admin_role_id)
