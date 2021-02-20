@@ -35,7 +35,8 @@
  - Owners can change the auth.gg secret.<br/>
  - Owners can reset the user's hwid.<br/>
  - Owners can set the user's hwid.<br/>
- - Owners can generate license keys.
+ - Owners can generate license keys.<br/>
+ - Owners can clear the logs.
 
 # Installation
  Make sure you have python 3.8.7 or higher.<br/>
