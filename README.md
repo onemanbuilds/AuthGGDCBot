@@ -52,9 +52,8 @@ pip3 install -r requirements.txt
  - authkey (your application's auth key which you can find at the application's panel).
  
 # ToDo
- - Make the code better.<br/>
- - Add salt to the encrypted data.<br/>
- - Add a log system or something in a txt to see who used the commands.
+ - Make the code better and cleaner.<br/>
+ - Add salt to the encrypted data.
  
 # Support
  - PayPal: onemanbuildsofficial@gmail.com<br/>
