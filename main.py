@@ -4,7 +4,10 @@ import json
 from discord.ext import commands
 from os import name, system
 from base64 import b64decode, b64encode
+from numpy import AxisError
+from datetime import datetime
 
+colors = {'white': "\033[1;37m", 'green': "\033[0;32m", 'red': "\033[0;31m", 'yellow': "\033[1;33m"}
 
 def clear():
     if name == 'posix':
@@ -54,20 +57,22 @@ class Main:
                         else:
                             return hwid
                     else:
-                        print(self.colors['white'] + 'Failed to get hwid')
+                        self.Error('GETUSERHWID','Failed to get hwid')
         except ValueError as v:
-            print(self.colors['yellow'] + 'JSON Value error at GETUSERHWID {0}'.format(self.colors['red'] + str(v)))
+            self.Error('VALUEERROR (GETUSERHWID)',v)
 
     def Log(self, user, command):
-        print(self.colors['white'] + 'USER ' + self.colors['yellow'] + str(user) + self.colors[
-            'white'] + ' USED THE COMMAND ' + self.colors['yellow'] + command)
+        timestamp = str(datetime.now().strftime('%Y-%M-%d %H:%M:%S'))
+        print(f"{colors['white']}[{colors['green']}{timestamp}{colors['white']}] USER {colors['yellow']}{str(user)} {colors['white']}USED THE COMMAND {colors['yellow']}{command}")
         with open('logs.txt', 'a', encoding='utf8') as f:
-            f.write(f'USER {str(user)} USED THE COMMAND {command}\n')
+            f.write(f'[{timestamp}] USER {str(user)} USED THE COMMAND {command}\n')
+
+    def Error(self,message,error):
+        print(f"{colors['yellow']}[{message}] {colors['red']}{str(error)}")
 
     def __init__(self):
         clear()
-        self.colors = {'white': "\033[1;37m", 'green': "\033[0;32m", 'red': "\033[0;31m", 'yellow': "\033[1;33m"}
-        self.title = self.colors['white'] + """
+        self.title = colors['white'] + """
                           ╔═════════════════════════════════════════════════════════════════════╗
                                            ╔═╗╦ ╦╔╦╗╦ ╦ ╔═╗╔═╗  ╔╦╗╔═╗  ╔╗ ╔═╗╔╦╗
                                            ╠═╣║ ║ ║ ╠═╣ ║ ╦║ ╦   ║║║    ╠╩╗║ ║ ║ 
@@ -108,8 +113,27 @@ class Main:
 
         @self.bot.event
         async def on_ready():
-            print(self.colors['white'] + '[#] AUTH.GG READY!')
+            print(colors['white'] + '[#] AUTH.GG READY!')
             print('')
+
+        @self.bot.event
+        async def on_command_error(ctx, error):
+            error_str = str(error)
+            error = getattr(error, 'original', error)
+            if isinstance(error, commands.CommandNotFound):
+                return
+            elif isinstance(error, commands.CheckFailure):
+                self.Error('CHECKFAILURE',error)
+            elif isinstance(error, commands.MissingRequiredArgument):
+                self.Error('MISSING REQUIRED ARGUMENT',error)
+            elif isinstance(error, AxisError):
+                self.Error('NOT VALID IMAGE',error)
+            elif isinstance(error, discord.errors.Forbidden):
+                self.Error('DISCORD FORBIDDEN',error)
+            elif "Cannot send an empty message" in error_str:
+                self.Error('EMPTY','Couldnt send empty message')         
+            else:
+                self.Error('UNKNOWN ERROR',error)
 
         @self.bot.command(pass_context=True)
         async def help(ctx):
@@ -121,7 +145,7 @@ class Main:
                     embed_message.add_field(name=key, value=self.general_commands[key], inline=False)
                 await ctx.send(embed=embed_message)
             except Exception as e:
-                print(self.colors['yellow'] + 'EXCEPTION at HELP {0}'.format(self.colors['red'] + str(e)))
+                self.Error('EXCEPTION',e)
 
         @self.bot.command(pass_context=True)
         @commands.has_role(self.admin_role_id)
@@ -133,8 +157,7 @@ class Main:
             try:
                 ReplaceValueInJson('[Data]/configs.json', 'prefix', newprefix)
             except ValueError as v:
-                print(
-                    self.colors['yellow'] + 'JSON Value error at PREFIX CHANGE {0}'.format(self.colors['red'] + str(v)))
+                self.Error('VALUEERROR (PREFIX)',v)
             else:
                 self.bot.command_prefix = ReadConfig()['prefix']
                 embed = discord.Embed(title='PREFIX', color=0x00ff00,
@@ -169,7 +192,7 @@ class Main:
             try:
                 ReplaceValueInJsonb64('[Data]/configs.json', 'aid', newaid)
             except ValueError as v:
-                print(self.colors['yellow'] + 'JSON Value error at AID CHANGE {0}'.format(self.colors['red'] + str(v)))
+                self.Error('VALUEERROR (SETAID)',v)
             else:
                 embed = discord.Embed(title='AID', color=0x00ff00,
                                       description=f'AID SET TO ||``{newaid}``||\n{ctx.author.mention}')
@@ -186,8 +209,7 @@ class Main:
             try:
                 ReplaceValueInJsonb64('[Data]/configs.json', 'apikey', newapikey)
             except ValueError as v:
-                print(
-                    self.colors['yellow'] + 'JSON Value error at APIKEY CHANGE {0}'.format(self.colors['red'] + str(v)))
+                self.Error('VALUEERROR (SETAPIKEY)',v)
             else:
                 embed = discord.Embed(title='APIKEY', color=0x00ff00,
                                       description=f'APIKEY SET TO ||``{newapikey}``||\n{ctx.author.mention}')
@@ -204,8 +226,7 @@ class Main:
             try:
                 ReplaceValueInJsonb64('[Data]/configs.json', 'secret', newsecret)
             except ValueError as v:
-                print(
-                    self.colors['yellow'] + 'JSON Value error at SECRET CHANGE {0}'.format(self.colors['red'] + str(v)))
+                self.Error('VALUEERROR (SETSECRET)',v)
             else:
                 embed = discord.Embed(title='SECRET', color=0x00ff00,
                                       description=f'SECRET SET TO ||``{newsecret}``||\n{ctx.author.mention}')
@@ -219,8 +240,7 @@ class Main:
             try:
                 ReplaceValueInJsonb64('[Data]/configs.json', 'authkey', newauthkey)
             except ValueError as v:
-                print(self.colors['yellow'] + 'JSON Value error at AUTHKEY CHANGE {0}'.format(
-                    self.colors['red'] + str(v)))
+                self.Error('VALUEERROR (SETAUTHKEY)',v)
             else:
                 embed = discord.Embed(title='AUTHKEY', color=0x00ff00,
                                       description=f'AUTHKEY SET TO ||``{newauthkey}``||\n{ctx.author.mention}')
@@ -281,14 +301,13 @@ class Main:
                                                   description=f'YOUR LICENSE EXPIRED ``{username}``\n{ctx.author.mention}')
                             await ctx.send(embed=embed)
                         elif response_json['result'] == 'failed':
-                            print(self.colors['yellow'] + 'EXPIRY' + self.colors['red'] + ' Invalid api key')
+                            print(colors['yellow'] + 'EXPIRY' + colors['red'] + ' Invalid api key')
                         else:
                             embed = discord.Embed(title='EXPIRY', color=0xff0000,
                                                   description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
                             await ctx.send(embed=embed)
                     except ValueError as v:
-                        print(self.colors['yellow'] + 'JSON Value error at EXPIRY {0}'.format(
-                            self.colors['red'] + str(v)))
+                        self.Error('VALUEERROR (EXPIRY)',v)
 
         @self.bot.command(pass_context=True)
         @commands.has_role(self.admin_role_id)
@@ -335,8 +354,7 @@ class Main:
                                                   description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
                             await ctx.send(embed=embed)
                     except ValueError as v:
-                        print(self.colors['yellow'] + 'JSON Value error at GETUSERINFO {0}'.format(
-                            self.colors['red'] + str(v)))
+                        self.Error('VALUEERROR (GETUSERINFO)',v)
 
         @self.bot.command(pass_context=True)
         @commands.has_role(self.admin_role_id)
@@ -367,8 +385,7 @@ class Main:
                                                   description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
                             await ctx.send(embed=embed)
                     except ValueError as v:
-                        print(self.colors['yellow'] + 'JSON Value error at DELUSER {0}'.format(
-                            self.colors['red'] + str(v)))
+                        self.Error('VALUEERROR (DELUSER)',v)
 
         @self.bot.command(pass_context=True)
         @commands.has_role(self.admin_role_id)
@@ -402,8 +419,7 @@ class Main:
                                                   description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
                             await ctx.send(embed=embed)
                     except ValueError as v:
-                        print(self.colors['yellow'] + 'JSON Value error at EDITVAR {0}'.format(
-                            self.colors['red'] + str(v)))
+                        self.Error('VALUEERROR (EDITVAR)',v)
 
         @self.bot.command(pass_context=True)
         @commands.has_role(self.admin_role_id)
@@ -436,8 +452,7 @@ class Main:
                                                   description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
                             await ctx.send(embed=embed)
                     except ValueError as v:
-                        print(self.colors['yellow'] + 'JSON Value error at EDITRANK {0}'.format(
-                            self.colors['red'] + str(v)))
+                        self.Error('VALUEERROR (EDITRANK)',v)
 
         @self.bot.command(pass_context=True)
         @commands.has_role(self.admin_role_id)
@@ -471,8 +486,7 @@ class Main:
                                                   description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
                             await ctx.send(embed=embed)
                     except ValueError as v:
-                        print(self.colors['yellow'] + 'JSON Value error at CHANGEPW {0}'.format(
-                            self.colors['red'] + str(v)))
+                        self.Error('VALUEERROR (CHANGEPW)',v)
 
         @self.bot.command(pass_context=True)
         @commands.has_role(self.admin_role_id)
@@ -500,8 +514,7 @@ class Main:
                                                   description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
                             await ctx.send(embed=embed)
                     except ValueError as v:
-                        print(self.colors['yellow'] + 'JSON Value error at USERCOUNT {0}'.format(
-                            self.colors['red'] + str(v)))
+                        self.Error('VALUEERROR (USERCOUNT)',v)
 
         @self.bot.command(pass_context=True)
         @commands.has_role(self.admin_role_id)
@@ -542,8 +555,7 @@ class Main:
                                                   description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
                             await ctx.send(embed=embed)
                     except ValueError as v:
-                        print(self.colors['yellow'] + 'JSON Value error at LICENSEINFO {0}'.format(
-                            self.colors['red'] + str(v)))
+                        self.Error('VALUEERROR (LICENSEINFO)',v)
 
         @self.bot.command(pass_context=True)
         @commands.has_role(self.admin_role_id)
@@ -573,8 +585,7 @@ class Main:
                                                   description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
                             await ctx.send(embed=embed)
                     except ValueError as v:
-                        print(self.colors['yellow'] + 'JSON Value error at DELLICENSE {0}'.format(
-                            self.colors['red'] + str(v)))
+                        self.Error('VALUEERROR (DELLICENSE)',v)
 
         @self.bot.command(pass_context=True)
         @commands.has_role(self.admin_role_id)
@@ -604,8 +615,7 @@ class Main:
                                                   description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
                             await ctx.send(embed=embed)
                     except ValueError as v:
-                        print(self.colors['yellow'] + 'JSON Value error at USELICENSE {0}'.format(
-                            self.colors['red'] + str(v)))
+                        self.Error('VALUEERROR (USELICENSE)',v)
 
         @self.bot.command(pass_context=True)
         @commands.has_role(self.admin_role_id)
@@ -635,8 +645,7 @@ class Main:
                                                   description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
                             await ctx.send(embed=embed)
                     except ValueError as v:
-                        print(self.colors['yellow'] + 'JSON Value error at UNUSELICENSE {0}'.format(
-                            self.colors['red'] + str(v)))
+                        self.Error('VALUEERROR (UNUSELICENSE)',v)
 
         @self.bot.command(pass_context=True)
         @commands.has_role(self.owner_role_id)
@@ -681,8 +690,7 @@ class Main:
                                                       description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
                                 await ctx.send(embed=embed)
                     except ValueError as v:
-                        print(self.colors['yellow'] + 'JSON Value error at GENLICENSE {0}'.format(
-                            self.colors['red'] + str(v)))
+                        self.Error('VALUEERROR (GENLICENSE)',v)
 
         @self.bot.command(pass_context=True)
         @commands.has_role(self.admin_role_id)
@@ -710,8 +718,7 @@ class Main:
                                                   description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
                             await ctx.send(embed=embed)
                     except ValueError as v:
-                        print(self.colors['yellow'] + 'JSON Value error at LICENSECOUNT {0}'.format(
-                            self.colors['red'] + str(v)))
+                        self.Error('VALUEERROR (LICENSECOUNT)',v)
 
         @self.bot.command(pass_context=True)
         @commands.has_role(self.admin_role_id)
@@ -743,8 +750,7 @@ class Main:
                                                   description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
                             await ctx.send(embed=embed)
                     except ValueError as v:
-                        print(self.colors['yellow'] + 'JSON Value error at GETHWID {0}'.format(
-                            self.colors['red'] + str(v)))
+                        self.Error('VALUEERROR (GETHWID)',v)
 
         @self.bot.command(pass_context=True)
         @commands.has_role(self.owner_role_id)
@@ -774,8 +780,7 @@ class Main:
                                                   description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
                             await ctx.send(embed=embed)
                     except ValueError as v:
-                        print(self.colors['yellow'] + 'JSON Value error at RESETHWID {0}'.format(
-                            self.colors['red'] + str(v)))
+                        self.Error('VALUEERROR (RESETHWID)',v)
 
         @self.bot.command(pass_context=True)
         @commands.has_role(self.owner_role_id)
@@ -808,8 +813,7 @@ class Main:
                                                   description=f'SOMETHING WENT WRONG\n{ctx.author.mention}')
                             await ctx.send(embed=embed)
                     except ValueError as v:
-                        print(self.colors['yellow'] + 'JSON Value error at SETHWID {0}'.format(
-                            self.colors['red'] + str(v)))
+                        self.Error('VALUEERROR (SETHWID)',v)
 
     def Start(self):
         self.bot.run(ReadConfig()['token'])
