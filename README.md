@@ -6,7 +6,10 @@
  - Colored messages.<br/>
  - Async requests.<br/>
  - Clear function.
- - Log with colored print.
+ - Clears console on start.
+ - Erros with colored print.
+ - Ascii art.
+ - Log with colored print and datetime.
  - Logs can be viewed from the log.txt.
  - Users can get their license expiration date.<br/>
  - Users can view the commands with the help command.<br/>
