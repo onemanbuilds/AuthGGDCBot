@@ -55,7 +55,7 @@ pip3 install -r requirements.txt
  - authkey (your application's auth key which you can find at the application's panel).
 
 # Console
-![](https://i.ibb.co/7g3jF9Y/tool.png)
+![](https://i.ibb.co/ryt6QrY/tool.png)
 
 # ToDo
  - Add salt to the encrypted data.
